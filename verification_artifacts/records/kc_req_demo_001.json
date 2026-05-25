@@ -1,5 +1,5 @@
 {
-  "created_at": "2026-05-25T07:46:55.352225+00:00",
+  "created_at": "2026-05-25T07:56:55.070809+00:00",
   "decision": "approve",
   "event_type": "payment_review",
   "journal": {
@@ -20,7 +20,7 @@
     "records_written": 90,
     "request_id": "kc_req_demo_001",
     "risk_level": "low",
-    "seal": "1e51ffa299018075833838e1dbd961a5bfdef1d0ad1c4d15c5a71eebf93e8e77",
+    "seal": "530c0d9c20e63b9f920a641aef9a790d1f0748b457238ad58cbc8d77103aedf7",
     "solver_outputs": 80,
     "stabilizer_converged": true,
     "stabilizer_rate_match": true
@@ -33,6 +33,6 @@
   ],
   "request_id": "kc_req_demo_001",
   "risk_level": "low",
-  "seal": "1e51ffa299018075833838e1dbd961a5bfdef1d0ad1c4d15c5a71eebf93e8e77",
+  "seal": "530c0d9c20e63b9f920a641aef9a790d1f0748b457238ad58cbc8d77103aedf7",
   "verification_url": "/verification/kc_req_demo_001"
 }
