@@ -12,3 +12,4 @@ __pycache__/
 verification_artifacts/secret_scan.txt
 verification_artifacts/latest_verify.log
 verification_artifacts/server_logs/
+verification_artifacts/receipt.bin
