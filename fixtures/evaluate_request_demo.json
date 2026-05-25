@@ -1,0 +1,10 @@
+{
+  "request_id": "kc_req_demo_001",
+  "event_type": "payment_review",
+  "amount": 1500,
+  "currency": "usd",
+  "merchant_id": "demo_merchant",
+  "metadata": {
+    "source": "evaluation_fixture"
+  }
+}

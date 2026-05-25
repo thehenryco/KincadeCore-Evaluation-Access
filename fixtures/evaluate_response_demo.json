@@ -1,0 +1,26 @@
+{
+  "request_id": "kc_req_demo_001",
+  "event_type": "payment_review",
+  "decision": "approve",
+  "risk_level": "low",
+  "reason_codes": [
+    "verified_readout",
+    "stabilizer_converged",
+    "seal_committed"
+  ],
+  "seal": "1e51ffa299018075833838e1dbd961a5bfdef1d0ad1c4d15c5a71eebf93e8e77",
+  "proof_status": "verified",
+  "journal": {
+    "complete": true,
+    "ok_count": 36,
+    "records_read": 10,
+    "atoms_found": 90,
+    "edges_created": 72,
+    "cycles_found": 10,
+    "solver_outputs": 80,
+    "physics_outputs": 10,
+    "records_written": 90,
+    "stabilizer_converged": true,
+    "stabilizer_rate_match": true
+  }
+}
