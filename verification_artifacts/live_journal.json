@@ -1,4 +1,6 @@
 {
+  "request_id": "kc_eval_2026_05_25_live_001",
+  "decision": "verified_readout",
   "complete": true,
   "ok_count": 36,
   "records_read": 10,
@@ -10,5 +12,5 @@
   "records_written": 90,
   "stabilizer_converged": true,
   "stabilizer_rate_match": true,
-  "seal": "4162b076fc9fefe825d65977cd84068eaa8bcd1d1f575fac59ff8f2785b7d7b8"
+  "seal": "1e51ffa299018075833838e1dbd961a5bfdef1d0ad1c4d15c5a71eebf93e8e77"
 }

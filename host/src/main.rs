@@ -6,6 +6,8 @@ use std::env;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct KincadeCoreReadout {
+    request_id: String,
+    decision: String,
     summary: String,
     complete: bool,
     partial_call: bool,
@@ -27,6 +29,8 @@ struct KincadeCoreReadout {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct KincadeCoreJournal {
+    request_id: String,
+    decision: String,
     complete: bool,
     partial_call: bool,
     ok_count: u32,
@@ -104,7 +108,15 @@ fn fetch_live_readout() -> KincadeCoreReadout {
         .get("answer")
         .expect("missing answer object");
 
+    let request_id = env::var("KINCADECORE_REQUEST_ID")
+        .unwrap_or_else(|_| "kc_eval_2026_05_25_live_001".to_string());
+
+    let decision = env::var("KINCADECORE_DECISION")
+        .unwrap_or_else(|_| "verified_readout".to_string());
+
     KincadeCoreReadout {
+        request_id,
+        decision,
         summary: as_str(answer, &["summary"]),
         complete: as_bool(answer, &["complete"]),
         partial_call: as_bool(answer, &["partial_call"]),
@@ -136,6 +148,8 @@ fn main() {
     let readout = fetch_live_readout();
 
     println!("Fetched live KincadeCore readout.");
+    println!("live_request_id={}", readout.request_id);
+    println!("live_decision={}", readout.decision);
     println!("live_complete={}", readout.complete);
     println!("live_ok_count={}", readout.ok_count);
     println!("live_seal={}", readout.seal);
@@ -152,6 +166,8 @@ fn main() {
 
     let journal: KincadeCoreJournal = receipt.journal.decode().unwrap();
 
+    assert_eq!(journal.request_id, readout.request_id);
+    assert_eq!(journal.decision, readout.decision);
     assert!(journal.complete);
     assert!(!journal.partial_call);
     assert_eq!(journal.ok_count, readout.ok_count);
@@ -169,6 +185,8 @@ fn main() {
     receipt.verify(KINCADECORE_GUEST_ID).unwrap();
 
     println!("Live KincadeCore RISC Zero proof verified.");
+    println!("request_id={}", journal.request_id);
+    println!("decision={}", journal.decision);
     println!("complete={}", journal.complete);
     println!("ok_count={}", journal.ok_count);
     println!("records_read={}", journal.records_read);

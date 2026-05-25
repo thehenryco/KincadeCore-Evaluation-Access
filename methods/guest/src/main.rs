@@ -3,6 +3,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct KincadeCoreReadout {
+    request_id: String,
+    decision: String,
     summary: String,
     complete: bool,
     partial_call: bool,
@@ -24,6 +26,8 @@ struct KincadeCoreReadout {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct KincadeCoreJournal {
+    request_id: String,
+    decision: String,
     complete: bool,
     partial_call: bool,
     ok_count: u32,
@@ -42,6 +46,10 @@ struct KincadeCoreJournal {
 fn main() {
     let readout: KincadeCoreReadout = env::read();
 
+    assert!(!readout.request_id.is_empty());
+    assert!(readout.request_id.len() <= 128);
+    assert!(!readout.decision.is_empty());
+    assert!(readout.decision.len() <= 64);
     assert!(readout.complete);
     assert!(!readout.partial_call);
     assert_eq!(readout.ok_count, 36);
@@ -59,6 +67,8 @@ fn main() {
     assert!(readout.seal.chars().all(|c| c.is_ascii_hexdigit()));
 
     let journal = KincadeCoreJournal {
+        request_id: readout.request_id,
+        decision: readout.decision,
         complete: readout.complete,
         partial_call: readout.partial_call,
         ok_count: readout.ok_count,
