@@ -13,3 +13,5 @@ verification_artifacts/secret_scan.txt
 verification_artifacts/latest_verify.log
 verification_artifacts/server_logs/
 verification_artifacts/receipt.bin
+verification_artifacts/receipt.bin
+verification_artifacts/final_secret_scan.txt
