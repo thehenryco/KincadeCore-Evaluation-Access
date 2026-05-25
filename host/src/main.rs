@@ -3,6 +3,8 @@ use risc0_zkvm::{default_prover, ExecutorEnv};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::env;
+use std::fs;
+use std::path::Path;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct KincadeCoreReadout {
@@ -140,6 +142,35 @@ fn fetch_live_readout() -> KincadeCoreReadout {
     }
 }
 
+
+fn write_verification_artifacts(
+    receipt: &risc0_zkvm::Receipt,
+    journal: &KincadeCoreJournal,
+) {
+    let artifact_dir = Path::new("verification_artifacts");
+    fs::create_dir_all(artifact_dir).unwrap();
+
+    let receipt_bytes = bincode::serialize(receipt).unwrap();
+    fs::write(artifact_dir.join("receipt.bin"), receipt_bytes).unwrap();
+
+    let journal_json = serde_json::to_string_pretty(journal).unwrap();
+    fs::write(artifact_dir.join("journal.json"), journal_json + "\n").unwrap();
+
+    let image_id_json = serde_json::json!({
+        "image_id": KINCADECORE_GUEST_ID,
+        "note": "Use this image ID to verify receipt.bin against the KincadeCore guest."
+    });
+    fs::write(
+        artifact_dir.join("image_id.json"),
+        serde_json::to_string_pretty(&image_id_json).unwrap() + "\n",
+    )
+    .unwrap();
+
+    println!("exported_receipt=verification_artifacts/receipt.bin");
+    println!("exported_journal=verification_artifacts/journal.json");
+    println!("exported_image_id=verification_artifacts/image_id.json");
+}
+
 fn main() {
     tracing_subscriber::fmt()
         .with_env_filter(tracing_subscriber::filter::EnvFilter::from_default_env())
@@ -183,6 +214,8 @@ fn main() {
     assert_eq!(journal.seal, readout.seal);
 
     receipt.verify(KINCADECORE_GUEST_ID).unwrap();
+
+    write_verification_artifacts(&receipt, &journal);
 
     println!("Live KincadeCore RISC Zero proof verified.");
     println!("request_id={}", journal.request_id);

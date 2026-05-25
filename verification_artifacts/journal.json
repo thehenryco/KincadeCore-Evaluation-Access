@@ -1,0 +1,17 @@
+{
+  "request_id": "kc_req_demo_001",
+  "decision": "approve",
+  "complete": true,
+  "partial_call": false,
+  "ok_count": 36,
+  "records_read": 10,
+  "atoms_found": 90,
+  "edges_created": 72,
+  "cycles_found": 10,
+  "solver_outputs": 80,
+  "physics_outputs": 10,
+  "records_written": 90,
+  "stabilizer_converged": true,
+  "stabilizer_rate_match": true,
+  "seal": "98513669b27902e65917e028d3a697cfa602d76490b9095d42d15e5518fdf31e"
+}
