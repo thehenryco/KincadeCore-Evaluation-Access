@@ -9,7 +9,12 @@ use std::path::Path;
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct KincadeCoreReadout {
     request_id: String,
+    payment_id: String,
+    session_id: String,
+    event_type: String,
     decision: String,
+    risk_level: String,
+    reason_codes: Vec<String>,
     summary: String,
     complete: bool,
     partial_call: bool,
@@ -32,7 +37,12 @@ struct KincadeCoreReadout {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct KincadeCoreJournal {
     request_id: String,
+    payment_id: String,
+    session_id: String,
+    event_type: String,
     decision: String,
+    risk_level: String,
+    reason_codes: Vec<String>,
     complete: bool,
     partial_call: bool,
     ok_count: u32,
@@ -87,6 +97,20 @@ fn as_scaled_f64(v: &Value, path: &[&str]) -> u64 {
     (x * 1_000_000_000_000_000.0).round() as u64
 }
 
+fn env_or_default(name: &str, default_value: &str) -> String {
+    env::var(name).unwrap_or_else(|_| default_value.to_string())
+}
+
+fn env_reason_codes() -> Vec<String> {
+    let raw = env::var("KINCADECORE_REASON_CODES")
+        .unwrap_or_else(|_| "verified_readout,stabilizer_converged,seal_committed".to_string());
+
+    raw.split(',')
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty())
+        .collect()
+}
+
 fn fetch_live_readout() -> KincadeCoreReadout {
     let api_key = env::var("GARDEN_API_KEY")
         .expect("GARDEN_API_KEY must be set in the shell running cargo");
@@ -110,15 +134,14 @@ fn fetch_live_readout() -> KincadeCoreReadout {
         .get("answer")
         .expect("missing answer object");
 
-    let request_id = env::var("KINCADECORE_REQUEST_ID")
-        .unwrap_or_else(|_| "kc_eval_2026_05_25_live_001".to_string());
-
-    let decision = env::var("KINCADECORE_DECISION")
-        .unwrap_or_else(|_| "verified_readout".to_string());
-
     KincadeCoreReadout {
-        request_id,
-        decision,
+        request_id: env_or_default("KINCADECORE_REQUEST_ID", "kc_req_demo_001"),
+        payment_id: env_or_default("KINCADECORE_PAYMENT_ID", "pi_demo_001"),
+        session_id: env_or_default("KINCADECORE_SESSION_ID", "cs_demo_001"),
+        event_type: env_or_default("KINCADECORE_EVENT_TYPE", "payment_review"),
+        decision: env_or_default("KINCADECORE_DECISION", "approve"),
+        risk_level: env_or_default("KINCADECORE_RISK_LEVEL", "low"),
+        reason_codes: env_reason_codes(),
         summary: as_str(answer, &["summary"]),
         complete: as_bool(answer, &["complete"]),
         partial_call: as_bool(answer, &["partial_call"]),
@@ -142,7 +165,6 @@ fn fetch_live_readout() -> KincadeCoreReadout {
     }
 }
 
-
 fn write_verification_artifacts(
     receipt: &risc0_zkvm::Receipt,
     journal: &KincadeCoreJournal,
@@ -160,6 +182,7 @@ fn write_verification_artifacts(
         "image_id": KINCADECORE_GUEST_ID,
         "note": "Use this image ID to verify receipt.bin against the KincadeCore guest."
     });
+
     fs::write(
         artifact_dir.join("image_id.json"),
         serde_json::to_string_pretty(&image_id_json).unwrap() + "\n",
@@ -180,7 +203,12 @@ fn main() {
 
     println!("Fetched live KincadeCore readout.");
     println!("live_request_id={}", readout.request_id);
+    println!("live_payment_id={}", readout.payment_id);
+    println!("live_session_id={}", readout.session_id);
+    println!("live_event_type={}", readout.event_type);
     println!("live_decision={}", readout.decision);
+    println!("live_risk_level={}", readout.risk_level);
+    println!("live_reason_codes={}", readout.reason_codes.join(","));
     println!("live_complete={}", readout.complete);
     println!("live_ok_count={}", readout.ok_count);
     println!("live_seal={}", readout.seal);
@@ -198,7 +226,12 @@ fn main() {
     let journal: KincadeCoreJournal = receipt.journal.decode().unwrap();
 
     assert_eq!(journal.request_id, readout.request_id);
+    assert_eq!(journal.payment_id, readout.payment_id);
+    assert_eq!(journal.session_id, readout.session_id);
+    assert_eq!(journal.event_type, readout.event_type);
     assert_eq!(journal.decision, readout.decision);
+    assert_eq!(journal.risk_level, readout.risk_level);
+    assert_eq!(journal.reason_codes, readout.reason_codes);
     assert!(journal.complete);
     assert!(!journal.partial_call);
     assert_eq!(journal.ok_count, readout.ok_count);
@@ -219,7 +252,12 @@ fn main() {
 
     println!("Live KincadeCore RISC Zero proof verified.");
     println!("request_id={}", journal.request_id);
+    println!("payment_id={}", journal.payment_id);
+    println!("session_id={}", journal.session_id);
+    println!("event_type={}", journal.event_type);
     println!("decision={}", journal.decision);
+    println!("risk_level={}", journal.risk_level);
+    println!("reason_codes={}", journal.reason_codes.join(","));
     println!("complete={}", journal.complete);
     println!("ok_count={}", journal.ok_count);
     println!("records_read={}", journal.records_read);

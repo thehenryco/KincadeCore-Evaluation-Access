@@ -4,7 +4,12 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct KincadeCoreReadout {
     request_id: String,
+    payment_id: String,
+    session_id: String,
+    event_type: String,
     decision: String,
+    risk_level: String,
+    reason_codes: Vec<String>,
     summary: String,
     complete: bool,
     partial_call: bool,
@@ -27,7 +32,12 @@ struct KincadeCoreReadout {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct KincadeCoreJournal {
     request_id: String,
+    payment_id: String,
+    session_id: String,
+    event_type: String,
     decision: String,
+    risk_level: String,
+    reason_codes: Vec<String>,
     complete: bool,
     partial_call: bool,
     ok_count: u32,
@@ -43,13 +53,30 @@ struct KincadeCoreJournal {
     seal: String,
 }
 
+fn assert_short_nonempty(label: &str, value: &str, max_len: usize) {
+    assert!(!value.is_empty(), "{} is empty", label);
+    assert!(value.len() <= max_len, "{} too long", label);
+}
+
 fn main() {
     let readout: KincadeCoreReadout = env::read();
 
-    assert!(!readout.request_id.is_empty());
-    assert!(readout.request_id.len() <= 128);
-    assert!(!readout.decision.is_empty());
-    assert!(readout.decision.len() <= 64);
+    assert_short_nonempty("request_id", &readout.request_id, 128);
+    assert_short_nonempty("payment_id", &readout.payment_id, 128);
+    assert_short_nonempty("session_id", &readout.session_id, 128);
+    assert_short_nonempty("event_type", &readout.event_type, 64);
+    assert_short_nonempty("decision", &readout.decision, 64);
+    assert_short_nonempty("risk_level", &readout.risk_level, 64);
+
+    assert!(matches!(readout.decision.as_str(), "approve" | "review" | "block" | "verified_readout"));
+    assert!(matches!(readout.risk_level.as_str(), "low" | "medium" | "high"));
+
+    assert!(!readout.reason_codes.is_empty());
+    assert!(readout.reason_codes.len() <= 16);
+    for code in &readout.reason_codes {
+        assert_short_nonempty("reason_code", code, 64);
+    }
+
     assert!(readout.complete);
     assert!(!readout.partial_call);
     assert_eq!(readout.ok_count, 36);
@@ -68,7 +95,12 @@ fn main() {
 
     let journal = KincadeCoreJournal {
         request_id: readout.request_id,
+        payment_id: readout.payment_id,
+        session_id: readout.session_id,
+        event_type: readout.event_type,
         decision: readout.decision,
+        risk_level: readout.risk_level,
+        reason_codes: readout.reason_codes,
         complete: readout.complete,
         partial_call: readout.partial_call,
         ok_count: readout.ok_count,

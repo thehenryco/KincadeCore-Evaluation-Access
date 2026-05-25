@@ -1,5 +1,5 @@
 {
-  "created_at": "2026-05-25T08:01:03.964287+00:00",
+  "created_at": "2026-05-25T08:14:02.017336+00:00",
   "decision": "approve",
   "event_type": "payment_review",
   "journal": {
@@ -10,6 +10,7 @@
     "edges_created": 72,
     "event_type": "payment_review",
     "ok_count": 36,
+    "payment_id": "pi_demo_001",
     "physics_outputs": 10,
     "reason_codes": [
       "verified_readout",
@@ -20,11 +21,13 @@
     "records_written": 90,
     "request_id": "kc_req_demo_001",
     "risk_level": "low",
-    "seal": "98513669b27902e65917e028d3a697cfa602d76490b9095d42d15e5518fdf31e",
+    "seal": "367189a13cbe9cefaa340017cb91089def4e3a057c6dfab35fc8c932f9d87c17",
+    "session_id": "cs_demo_001",
     "solver_outputs": 80,
     "stabilizer_converged": true,
     "stabilizer_rate_match": true
   },
+  "payment_id": "pi_demo_001",
   "proof_status": "verified",
   "reason_codes": [
     "verified_readout",
@@ -33,6 +36,8 @@
   ],
   "request_id": "kc_req_demo_001",
   "risk_level": "low",
-  "seal": "98513669b27902e65917e028d3a697cfa602d76490b9095d42d15e5518fdf31e",
+  "seal": "367189a13cbe9cefaa340017cb91089def4e3a057c6dfab35fc8c932f9d87c17",
+  "session_id": "cs_demo_001",
+  "summary": "Decision: approve. Risk level: low Proof status: verified. Reason codes: verified_readout, stabilizer_converged, seal_committed.",
   "verification_url": "/verification/kc_req_demo_001"
 }

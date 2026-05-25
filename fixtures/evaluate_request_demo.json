@@ -1,9 +1,18 @@
 {
   "request_id": "kc_req_demo_001",
+  "payment_id": "pi_demo_001",
+  "session_id": "cs_demo_001",
   "event_type": "payment_review",
   "amount": 1500,
   "currency": "usd",
   "merchant_id": "demo_merchant",
+  "decision": "approve",
+  "risk_level": "low",
+  "reason_codes": [
+    "verified_readout",
+    "stabilizer_converged",
+    "seal_committed"
+  ],
   "metadata": {
     "source": "evaluation_fixture"
   }

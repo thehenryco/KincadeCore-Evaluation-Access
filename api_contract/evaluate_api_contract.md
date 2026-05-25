@@ -93,3 +93,21 @@ Allowed values:
 - Stripe secrets
 - private solver internals
 - internal database paths
+
+## Customer-Facing Clarity Requirement
+
+Each evaluation response should include a plain-language summary.
+
+Required customer-facing fields:
+
+- request_id
+- event_type
+- decision
+- risk_level
+- summary
+- reason_codes
+- proof_status
+- seal
+- verification_url
+
+The `summary` field exists so evaluators do not need to interpret raw proof fields to understand the result.

@@ -6,7 +6,12 @@ use std::fs;
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct KincadeCoreJournal {
     request_id: String,
+    payment_id: String,
+    session_id: String,
+    event_type: String,
     decision: String,
+    risk_level: String,
+    reason_codes: Vec<String>,
     complete: bool,
     partial_call: bool,
     ok_count: u32,
@@ -42,7 +47,12 @@ fn main() {
     println!("SAVED_RECEIPT_VERIFIED=true");
     println!("receipt_path={}", receipt_path);
     println!("request_id={}", journal.request_id);
+    println!("payment_id={}", journal.payment_id);
+    println!("session_id={}", journal.session_id);
+    println!("event_type={}", journal.event_type);
     println!("decision={}", journal.decision);
+    println!("risk_level={}", journal.risk_level);
+    println!("reason_codes={}", journal.reason_codes.join(","));
     println!("complete={}", journal.complete);
     println!("ok_count={}", journal.ok_count);
     println!("seal={}", journal.seal);
