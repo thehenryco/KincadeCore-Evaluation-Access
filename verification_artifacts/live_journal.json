@@ -1,0 +1,14 @@
+{
+  "complete": true,
+  "ok_count": 36,
+  "records_read": 10,
+  "atoms_found": 90,
+  "edges_created": 72,
+  "cycles_found": 10,
+  "solver_outputs": 80,
+  "physics_outputs": 10,
+  "records_written": 90,
+  "stabilizer_converged": true,
+  "stabilizer_rate_match": true,
+  "seal": "4162b076fc9fefe825d65977cd84068eaa8bcd1d1f575fac59ff8f2785b7d7b8"
+}

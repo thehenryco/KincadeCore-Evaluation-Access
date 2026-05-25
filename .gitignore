@@ -9,3 +9,5 @@ target/
 *.log.private
 __pycache__/
 .DS_Store
+verification_artifacts/secret_scan.txt
+verification_artifacts/latest_verify.log
