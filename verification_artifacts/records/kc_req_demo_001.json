@@ -1,0 +1,38 @@
+{
+  "created_at": "2026-05-25T07:46:55.352225+00:00",
+  "decision": "approve",
+  "event_type": "payment_review",
+  "journal": {
+    "atoms_found": 90,
+    "complete": true,
+    "cycles_found": 10,
+    "decision": "approve",
+    "edges_created": 72,
+    "event_type": "payment_review",
+    "ok_count": 36,
+    "physics_outputs": 10,
+    "reason_codes": [
+      "verified_readout",
+      "stabilizer_converged",
+      "seal_committed"
+    ],
+    "records_read": 10,
+    "records_written": 90,
+    "request_id": "kc_req_demo_001",
+    "risk_level": "low",
+    "seal": "1e51ffa299018075833838e1dbd961a5bfdef1d0ad1c4d15c5a71eebf93e8e77",
+    "solver_outputs": 80,
+    "stabilizer_converged": true,
+    "stabilizer_rate_match": true
+  },
+  "proof_status": "verified",
+  "reason_codes": [
+    "verified_readout",
+    "stabilizer_converged",
+    "seal_committed"
+  ],
+  "request_id": "kc_req_demo_001",
+  "risk_level": "low",
+  "seal": "1e51ffa299018075833838e1dbd961a5bfdef1d0ad1c4d15c5a71eebf93e8e77",
+  "verification_url": "/verification/kc_req_demo_001"
+}
