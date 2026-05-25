@@ -61,10 +61,15 @@ def parse_int(value):
     return int(str(value).strip())
 
 
-def run_live_verifier(request_id, decision):
+def run_live_verifier(request_id, payment_id, session_id, event_type, decision, risk_level, reason_codes):
     env = os.environ.copy()
     env["KINCADECORE_REQUEST_ID"] = request_id
+    env["KINCADECORE_PAYMENT_ID"] = payment_id
+    env["KINCADECORE_SESSION_ID"] = session_id
+    env["KINCADECORE_EVENT_TYPE"] = event_type
     env["KINCADECORE_DECISION"] = decision
+    env["KINCADECORE_RISK_LEVEL"] = risk_level
+    env["KINCADECORE_REASON_CODES"] = ",".join(reason_codes)
 
     if "GARDEN_API_KEY" not in env:
         raise RuntimeError("GARDEN_API_KEY is required to run live verification")
@@ -94,7 +99,12 @@ def run_live_verifier(request_id, decision):
 
     required = [
         "request_id",
+        "payment_id",
+        "session_id",
+        "event_type",
         "decision",
+        "risk_level",
+        "reason_codes",
         "complete",
         "ok_count",
         "records_read",
@@ -115,7 +125,12 @@ def run_live_verifier(request_id, decision):
 
     journal = {
         "request_id": fields["request_id"],
+        "payment_id": fields["payment_id"],
+        "session_id": fields["session_id"],
+        "event_type": fields["event_type"],
         "decision": fields["decision"],
+        "risk_level": fields["risk_level"],
+        "reason_codes": [x for x in fields["reason_codes"].split(",") if x],
         "complete": parse_bool(fields["complete"]),
         "ok_count": parse_int(fields["ok_count"]),
         "records_read": parse_int(fields["records_read"]),
@@ -133,9 +148,21 @@ def run_live_verifier(request_id, decision):
     return journal
 
 
+
+def build_summary(decision, risk_level, reason_codes, proof_status):
+    reasons = ", ".join(reason_codes)
+    return (
+        f"Decision: {decision}. "
+        f"Risk level: {risk_level}. "
+        f"Proof status: {proof_status}. "
+        f"Reason codes: {reasons}."
+    )
+
 def evaluate_request(payload):
     request_id = safe_id(payload.get("request_id") or f"kc_req_{uuid.uuid4().hex[:16]}")
     event_type = payload.get("event_type", "payment_review")
+    payment_id = payload.get("payment_id", "pi_demo_001")
+    session_id = payload.get("session_id", "cs_demo_001")
 
     decision = payload.get("decision", "approve")
     if decision not in ALLOWED_DECISIONS:
@@ -151,17 +178,31 @@ def evaluate_request(payload):
         "seal_committed",
     ]
 
-    journal = run_live_verifier(request_id=request_id, decision=decision)
+    journal = run_live_verifier(
+        request_id=request_id,
+        payment_id=payment_id,
+        session_id=session_id,
+        event_type=event_type,
+        decision=decision,
+        risk_level=risk_level,
+        reason_codes=reason_codes,
+    )
 
-    journal["event_type"] = event_type
-    journal["risk_level"] = risk_level
-    journal["reason_codes"] = reason_codes
+    summary = build_summary(
+        decision=decision,
+        risk_level=risk_level,
+        reason_codes=reason_codes,
+        proof_status="verified",
+    )
 
     result = {
         "request_id": request_id,
         "event_type": event_type,
+        "payment_id": payment_id,
+        "session_id": session_id,
         "decision": decision,
         "risk_level": risk_level,
+        "summary": summary,
         "reason_codes": reason_codes,
         "proof_status": "verified",
         "seal": journal["seal"],
