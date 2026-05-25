@@ -30,3 +30,29 @@ records_written=90
 stabilizer_converged=true
 stabilizer_rate_match=true
 seal=00aba5cb6bc00496c0482eb0fe7ee210caae937c1658c67a117d87c97cd14617
+
+## Request-Bound Verification Checkpoint
+
+The repository now includes a request-bound verification fixture.
+
+Demo fixture:
+
+fixtures/payment_review_demo.json
+
+Current proof shape:
+
+request_id=kc_req_demo_001
+event_type=payment_review
+decision=approve
+risk_level=low
+reason_codes=verified_readout,stabilizer_converged,seal_committed
+
+The live KincadeCore RISC Zero path has passed with real proof mode and verified receipt output.
+
+This means the evaluation package now demonstrates the core product flow:
+
+request/payment-style event
+-> KincadeCore live readout
+-> RISC Zero guest verification
+-> public journal
+-> verified receipt

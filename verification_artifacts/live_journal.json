@@ -1,6 +1,13 @@
-﻿{
-  "request_id": "kc_eval_2026_05_25_live_001",
-  "decision": "verified_readout",
+{
+  "request_id": "kc_req_demo_001",
+  "event_type": "payment_review",
+  "decision": "approve",
+  "risk_level": "low",
+  "reason_codes": [
+    "verified_readout",
+    "stabilizer_converged",
+    "seal_committed"
+  ],
   "complete": true,
   "ok_count": 36,
   "records_read": 10,
